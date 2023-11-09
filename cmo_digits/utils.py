@@ -8,12 +8,30 @@ from .network import TestingData, TrainingData
 
 
 def show_num(inp: NDArray[np.float64]):
+    """
+    show the number
+
+    the image arrays that we use for training are 784x1 to make them
+    easier to work with.
+
+    Args:
+        inp (NDArray[np.float64]): the image array
+    """
     arr = (inp * 255).astype(np.uint8).reshape(28, 28)
 
     im.fromarray(arr, "L").show()
 
 
 def load_data(filepath: str) -> Tuple[TrainingData, TestingData]:
+    """
+    load the training and testing data from `filepath`
+
+    Args:
+        filepath (str): the path to the dataset (a .npz file)
+
+    Returns:
+        Tuple[TrainingData, TestingData]: training and testing data
+    """
     data = np.load(filepath)
 
     tr_d = (data["x_train"], data["y_train"])
