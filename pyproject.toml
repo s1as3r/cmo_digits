@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "cmo_digits"
+version = "0.1.0"
+description = ""
+authors = ["Arbaaz Shafiq <arbaazshafiq@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10 <3.13"
+numpy = "^1.26.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
