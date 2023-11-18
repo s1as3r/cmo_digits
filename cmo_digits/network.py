@@ -1,13 +1,13 @@
 import pickle
-from collections.abc import Callable
 from typing import List, Self, Tuple
 
 import numpy as np
 from numpy.typing import NDArray
 
+from .activation.interface import ActivationFn
+
 TrainingData = List[Tuple[NDArray[np.float64], NDArray[np.float64]]]
 TestingData = List[Tuple[NDArray[np.float64], int]]
-ActivationFn = Callable[[NDArray[np.float64]], NDArray[np.float64]]
 
 
 class Network:
@@ -19,7 +19,6 @@ class Network:
         self,
         sizes: List[int],
         activation_fn: ActivationFn,
-        activation_fn_prime: ActivationFn,
     ):
         """
         Args:
@@ -35,7 +34,6 @@ class Network:
         """
         self.num_layers = len(sizes)
         self.activation_fn = activation_fn
-        self.activation_fn_prime = activation_fn_prime
 
         self.sizes = sizes
 
@@ -55,7 +53,7 @@ class Network:
             NDArray[np.float64]: output of the network for the input `inp`
         """
         for b, w in zip(self.biases, self.weights):
-            inp = self.activation_fn(np.dot(w, inp) + b)
+            inp = self.activation_fn.evaluate(np.dot(w, inp) + b)
 
         return inp
 
@@ -153,20 +151,20 @@ class Network:
         for b, w in zip(self.biases, self.weights):
             z = np.dot(w, activation) + b
             zs.append(z)
-            activation = self.activation_fn(z)
+            activation = self.activation_fn.evaluate(z)
             activations.append(activation)
 
         # backward pass
         delta = self.cost_derivative(
             activations[-1], desired
-        ) * self.activation_fn_prime(zs[-1])
+        ) * self.activation_fn.prime(zs[-1])
 
         nabla_b[-1] = delta
         nabla_w[-1] = np.dot(delta, activations[-2].transpose())
 
         for layer in range(2, self.num_layers):
             z = zs[-layer]
-            sp = self.activation_fn_prime(z)
+            sp = self.activation_fn.prime(z)
             delta = np.dot(self.weights[-layer + 1].transpose(), delta) * sp
             nabla_b[-layer] = delta
             nabla_w[-layer] = np.dot(delta, activations[-layer - 1].transpose())
