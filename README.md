@@ -2,11 +2,14 @@
 
 Handwritten Digit recogniser done as part of the Computational Methods and Optimisation Course at Plaksha
 
-## To-Do
+## Training
 
-- [ ] Documentation
-- [ ] Formalize interface for different optimizers
-- [ ] Implement more optimizers
+You can import the `Network` class and train it with different hyperparameters and training data or
+you can use `train.py`.
+
+Check the usage of `train.py`:
+
+- `python3 train.py --help`
 
 ## Results
 
