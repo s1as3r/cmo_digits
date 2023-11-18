@@ -1,4 +1,5 @@
-pickled_models
+_models
+_stats
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
