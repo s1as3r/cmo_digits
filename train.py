@@ -63,6 +63,7 @@ def main():
                 "layers": sizes,
                 "activation_fn": activation_fn.__name__,
                 "time_taken": took,
+                "accuracy": net.accuracy,
             }
             with open(args.save_stats, "w") as f:
                 json.dump(stats, f)
