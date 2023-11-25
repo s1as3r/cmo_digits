@@ -5,9 +5,12 @@ import numpy as np
 from numpy.typing import NDArray
 
 from .activation.interface import ActivationFn
+from .activation.sigmoid import Sigmoid
 
 TrainingData = List[Tuple[NDArray[np.float64], NDArray[np.float64]]]
 TestingData = List[Tuple[NDArray[np.float64], int]]
+
+DEFAULT_ACTIVATION_FN = Sigmoid
 
 
 class Network:
@@ -216,18 +219,18 @@ class Network:
 
     def save_to_pkl(self, filepath: str):
         """
-        Save the network to `filepath` as a pickle
+        Save the network's weights and biases to `filepath` as a pickle
 
         Args:
             filepath (str): path to the pickle file
         """
         with open(filepath, "wb") as f:
-            pickle.dump(self, f)
+            pickle.dump((self.weights, self.biases), f)
 
     @classmethod
     def from_pkl(cls, filepath: str) -> Self:
         """
-        Load network from a pickle
+        Load a network from a pickle
 
         Args:
             filepath (str): path to the pickle file
@@ -236,4 +239,11 @@ class Network:
             Network: the neural network
         """
         with open(filepath, "rb") as f:
-            return pickle.load(f)
+            weights, biases = pickle.load(f)
+
+        sizes = [w.shape[1] for w in weights] + [weights[-1].shape[0]]
+        net = cls(sizes, DEFAULT_ACTIVATION_FN)
+        net.weights = weights
+        net.biases = biases
+
+        return net
