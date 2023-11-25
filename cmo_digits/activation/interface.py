@@ -12,9 +12,8 @@ class ActivationFn(Protocol):
     `evaluate` and `prime`.
     """
 
-    @staticmethod
     @abstractmethod
-    def evaluate(inp: NDArray[np.float64]) -> NDArray[np.float64]:
+    def evaluate(self, inp: NDArray[np.float64]) -> NDArray[np.float64]:
         """
         Evaluate the Activation Function on the input
 
@@ -26,9 +25,8 @@ class ActivationFn(Protocol):
         """
         raise NotImplementedError
 
-    @staticmethod
     @abstractmethod
-    def prime(inp: NDArray[np.float64]) -> NDArray[np.float64]:
+    def prime(self, inp: NDArray[np.float64]) -> NDArray[np.float64]:
         """
         Derivative of the Activation Function
 

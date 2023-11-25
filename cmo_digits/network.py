@@ -242,7 +242,7 @@ class Network:
             weights, biases = pickle.load(f)
 
         sizes = [w.shape[1] for w in weights] + [weights[-1].shape[0]]
-        net = cls(sizes, DEFAULT_ACTIVATION_FN)
+        net = cls(sizes, DEFAULT_ACTIVATION_FN())
         net.weights = weights
         net.biases = biases
 

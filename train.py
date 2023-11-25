@@ -22,7 +22,7 @@ def main():
     args = parser.parse_args()
 
     sizes = [DIGIT_HEIGHT * DIGIT_WIDTH, *args.layers, OUTPUT_NEURONS]
-    activation_fn = ACTIVATION_FNS.get(args.activation.lower(), Sigmoid)
+    activation_fn = ACTIVATION_FNS.get(args.activation.lower(), Sigmoid)()
 
     net = Network(sizes, activation_fn)
 
@@ -33,7 +33,7 @@ def main():
     print(f"\tn_epochs = {args.epochs}")
     print(f"\tmini-batch size = {args.batch_size}")
     print(f"\tlearning rate = {args.eta}")
-    print(f"\tactivation function = {activation_fn.__name__}")
+    print(f"\tactivation function = {type(activation_fn).__name__}")
 
     start_time = time.time()
     net.stochastic_gd(
@@ -106,7 +106,7 @@ def get_parser() -> ArgumentParser:
     parser.add_argument(
         "--activation",
         "-a",
-        choices=["sigmoid"],
+        choices=ACTIVATION_FNS.keys(),
         default="sigmoid",
         help="activation function to use",
     )
