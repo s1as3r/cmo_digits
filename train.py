@@ -1,6 +1,6 @@
 import json
 import time
-from argparse import ONE_OR_MORE, ArgumentParser
+from argparse import ONE_OR_MORE, ZERO_OR_MORE, Action, ArgumentParser
 from pathlib import Path
 
 from cmo_digits.activation.leaky_relu import LReLU
@@ -25,7 +25,9 @@ def main():
     args = parser.parse_args()
 
     sizes = [DIGIT_HEIGHT * DIGIT_WIDTH, *args.layers, OUTPUT_NEURONS]
-    activation_fn = ACTIVATION_FNS.get(args.activation.lower(), Sigmoid)()
+    activation_fn = ACTIVATION_FNS.get(args.activation.lower(), Sigmoid)(
+        **(args.act_args or {})
+    )
 
     net = Network(sizes, activation_fn)
 
@@ -37,6 +39,8 @@ def main():
     print(f"\tmini-batch size = {args.batch_size}")
     print(f"\tlearning rate = {args.eta}")
     print(f"\tactivation function = {type(activation_fn).__name__}")
+    if args.act_args:
+        print(f"\tactivation fn args = {args.act_args}")
 
     start_time = time.time()
     net.stochastic_gd(
@@ -67,10 +71,26 @@ def main():
                 "activation_fn": activation_fn.__name__,
                 "time_taken": took,
                 "accuracy": net.accuracy,
+                "activation_fn_args": args.act_args,
             }
 
             with open(args.save_stats, "w") as f:
                 json.dump(stats, f)
+
+
+class ParseKwargs(Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        setattr(namespace, self.dest, dict())
+
+        for value in values:
+            key, value = value.split("=")
+
+            try:
+                value = float(value)
+            except ValueError:
+                pass
+
+            getattr(namespace, self.dest)[key] = value
 
 
 def get_parser() -> ArgumentParser:
@@ -127,6 +147,14 @@ def get_parser() -> ArgumentParser:
         type=Path,
         metavar="FILEPATH",
         help="save the model statistics to a json file",
+    )
+
+    parser.add_argument(
+        "--act-args",
+        action=ParseKwargs,
+        nargs=ZERO_OR_MORE,
+        metavar="PARAM=VALUE",
+        help="pass arguments to the activation function",
     )
 
     return parser
