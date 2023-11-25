@@ -45,7 +45,7 @@ class Network:
         self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
         self.weights = [np.random.randn(y, x) for x, y in zip(sizes[:-1], sizes[1:])]
 
-        self.accuracy = 0.0
+        self.accuracy = []
 
     def feedforward(self, inp: NDArray[np.float64]) -> NDArray[np.float64]:
         """
@@ -104,7 +104,7 @@ class Network:
 
             if test_data:
                 evaluation = self.evaluate(test_data)
-                self.accuracy = evaluation / n_test
+                self.accuracy.append(evaluation / n_test)
                 print(f"Epoch {j}: {evaluation} / {n_test}")
             else:
                 print(f"Epoch {j} complete")
