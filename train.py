@@ -3,7 +3,10 @@ import time
 from argparse import ONE_OR_MORE, ArgumentParser
 from pathlib import Path
 
+from cmo_digits.activation.leaky_relu import LReLU
+from cmo_digits.activation.relu import ReLU
 from cmo_digits.activation.sigmoid import Sigmoid
+from cmo_digits.activation.tanh import Tanh
 from cmo_digits.network import Network
 from cmo_digits.utils import load_data
 
@@ -12,7 +15,7 @@ DIGIT_WIDTH = 28
 
 OUTPUT_NEURONS = 10
 
-ACTIVATION_FNS = {"sigmoid": Sigmoid}
+ACTIVATION_FNS = {"sigmoid": Sigmoid, "relu": ReLU, "lrelu": LReLU, "tanh": Tanh}
 
 DATASET = "./datasets/mnist.npz"
 
@@ -65,6 +68,7 @@ def main():
                 "time_taken": took,
                 "accuracy": net.accuracy,
             }
+
             with open(args.save_stats, "w") as f:
                 json.dump(stats, f)
 
