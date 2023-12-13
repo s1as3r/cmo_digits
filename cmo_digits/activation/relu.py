@@ -32,4 +32,4 @@ class ReLU(ActivationFn):
         Returns:
             NDArray[np.float64]: the derivative of relu function applied to the input
         """
-        return np.where(inp > 0, 1.0, 0.0)
+        return np.where(inp <= 0, 0.0, 1.0)

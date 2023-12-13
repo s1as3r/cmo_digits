@@ -34,4 +34,4 @@ class LReLU(ActivationFn):
         Returns:
             NDArray[np.float64]: the derivative of relu function applied to the input
         """
-        return np.where(inp <= 0, self.negative_slope, inp)
+        return np.where(inp <= 0, self.negative_slope, 1.0)

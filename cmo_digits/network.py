@@ -6,6 +6,8 @@ from numpy.typing import NDArray
 
 from .activation.interface import ActivationFn
 from .activation.sigmoid import Sigmoid
+from .initializers import WeightInitializer
+from .initializers import gaussian as gaussian_init
 
 TrainingData = List[Tuple[NDArray[np.float64], NDArray[np.float64]]]
 TestingData = List[Tuple[NDArray[np.float64], int]]
@@ -22,6 +24,7 @@ class Network:
         self,
         sizes: List[int],
         activation_fn: ActivationFn,
+        weight_init_fn: WeightInitializer = gaussian_init,
     ):
         """
         Args:
@@ -43,7 +46,7 @@ class Network:
         # weights and biases are initialized randomly with a gaussian distribution
         # of mean 0 and vairance 1
         self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
-        self.weights = [np.random.randn(y, x) for x, y in zip(sizes[:-1], sizes[1:])]
+        self.weights = weight_init_fn(self.sizes)
 
         self.accuracy = []
 
@@ -189,6 +192,10 @@ class Network:
             int: the predicted number
         """
         return int(self.feedforward(inp).argmax())
+
+    def predict_with_score(self, inp: NDArray[np.float64]) -> Tuple[int, np.float64]:
+        ff_res = self.feedforward(inp)
+        return int(ff_res.argmax()), ff_res.max()
 
     def evaluate(self, test_data: TestingData) -> int:
         """
