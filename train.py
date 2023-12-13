@@ -1,8 +1,10 @@
+#!/usr/bin/env python3
 import json
 import time
 from argparse import ONE_OR_MORE, ZERO_OR_MORE, Action, ArgumentParser
 from pathlib import Path
 
+import cmo_digits.initializers as initializers
 from cmo_digits.activation.leaky_relu import LReLU
 from cmo_digits.activation.relu import ReLU
 from cmo_digits.activation.sigmoid import Sigmoid
@@ -29,7 +31,11 @@ def main():
         **(args.act_args or {})
     )
 
-    net = Network(sizes, activation_fn)
+    if isinstance(activation_fn, ReLU) or isinstance(activation_fn, LReLU):
+        weights_init_fn = initializers.he_kaiming
+    else:
+        weights_init_fn = initializers.gaussian
+    net = Network(sizes, activation_fn, weights_init_fn)
 
     training_data, testing_data = load_data(DATASET)
 
@@ -68,7 +74,7 @@ def main():
                 "mini_batch_size": args.batch_size,
                 "eta": args.eta,
                 "layers": sizes,
-                "activation_fn": activation_fn.__name__,
+                "activation_fn": type(activation_fn).__name__,
                 "time_taken": took,
                 "accuracy": net.accuracy,
                 "activation_fn_args": args.act_args,
