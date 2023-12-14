@@ -37,14 +37,13 @@ class Network:
 
             activation_fn (ActivationFn): the activation function
             activation_fn_prime (ActivationFn): the derivative of the activation function
+            weight_init_fn (WeightInitializer): weight initialization function
         """
         self.num_layers = len(sizes)
         self.activation_fn = activation_fn
 
         self.sizes = sizes
 
-        # weights and biases are initialized randomly with a gaussian distribution
-        # of mean 0 and vairance 1
         self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
         self.weights = weight_init_fn(self.sizes)
 
