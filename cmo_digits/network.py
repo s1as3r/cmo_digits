@@ -125,7 +125,7 @@ class Network:
         nabla_w = [np.zeros(w.shape) for w in self.weights]
 
         for inp, desired in mini_batch:
-            delta_nabla_b, delta_nabla_w = self.backdrop(inp, desired)
+            delta_nabla_b, delta_nabla_w = self.backprop(inp, desired)
             nabla_b = [nb + dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
             nabla_w = [nw + dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
 
@@ -136,7 +136,7 @@ class Network:
             b - (eta / len(mini_batch)) * nb for b, nb in zip(self.biases, nabla_b)
         ]
 
-    def backdrop(
+    def backprop(
         self, inp: NDArray[np.float64], desired: NDArray[np.float64]
     ) -> Tuple[List[NDArray[np.float64]], List[NDArray[np.float64]]]:
         """
