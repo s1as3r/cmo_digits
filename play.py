@@ -10,11 +10,12 @@ from numpy.typing import NDArray
 
 from cmo_digits.network import Network
 
-DEFAULT_MODEL = Path("./_models/default.pkl")
+DEFAULT_MODEL = Path("./_models/Sigmoid_784,30,10_3.0_10_30.pkl")
 
 
 def get_parser() -> ArgumentParser:
     parser = ArgumentParser()
+    parser.add_argument("image", type=Path, metavar="IMAGE", help="image to predict")
     parser.add_argument(
         "--model",
         "-m",
@@ -22,7 +23,7 @@ def get_parser() -> ArgumentParser:
         help="path to the model to use",
         default=DEFAULT_MODEL,
     )
-    parser.add_argument("image", type=Path, metavar="IMAGE", help="image to predict")
+    parser.add_argument("--acts", "-a", action="store_true", help="print activations")
 
     return parser
 
@@ -42,7 +43,11 @@ def main():
         sys.exit(1)
 
     net = Network.from_pkl(args.model)
-    print(f"is it: {net.predict(to_input(args.image))}?")
+    acts = net.feedforward(to_input(args.image))
+
+    if args.acts:
+        print(f"activations:\n{acts}")
+    print(f"is it: {acts.argmax()}?")
 
 
 if __name__ == "__main__":
